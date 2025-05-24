@@ -44,7 +44,7 @@ export class StagiaireFormComponent {
 
       return diffDays > 0 ? diffDays : 0;
     }
-
+    
     onSubmit() {
       const formValue = this.stagiaireForm.value;
       console.log('Submitted:', formValue);

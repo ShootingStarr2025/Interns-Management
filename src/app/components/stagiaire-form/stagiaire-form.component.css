@@ -5,20 +5,22 @@
 }
 
 h3 {
-    padding: 20px;
+    padding: 10px;
+    text-align: center;
 }
 
 form {
-    margin-left: 20px;
+    display: flex;
+    width: 100%;
+    margin-left: 10px;
 }
 
 form .subdiv {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
+    justify-content: space-between;
+    margin-bottom: 15px;
 }
-
 
 form .subdiv label {
     font-family: 'Times New Roman', Times, serif;
@@ -28,32 +30,52 @@ form .subdiv label {
 
 form .subdiv input[type="text"] {
     width: 70%;
-    padding: 10px;
+    padding: 13px;
     border-radius: 5px;
     border-bottom: 1px solid gray;
     border-style: none;
 }
 
-form .subdiv input[type="text"]:hover {
-    border: 1px solid rgba(0, 195, 255, 0.836);
-}
 
 form .subdiv input[type="email"] {
     width: 70%;
-    padding: 10px; 
+    padding: 13px; 
     border-radius: 5px;
-    border-bottom: 1px solid gray;
     border-style: none;
+    border-bottom-style: 2px inset transparent;
 }
 
+form .subdiv input[type="email"]:focus,
 form .subdiv input[type="text"]:focus {
-    outline: none;
-    border: none;
-    border-bottom: 1px solid transparent;
-    background-image: linear-gradient(to right, #3b82f6, #0ea5e9);
-    background-repeat: no-repeat;
-    background-size: 100% 2px;
-    background-position: 0 100%;
+  border: none;
+  outline: none;
+  border-bottom: 1px solid transparent;
+  background-image: linear-gradient(to right, #3b82f6, #0ea5e9);
+  background-repeat: no-repeat;
+  background-size: 100% 2px;
+  background-position: 0 100%;
+  transition: background-size 0.3s ease-out, background-color 0.3s ease-out;
 }
 
 
+form button {
+    padding: 10px 40px;
+    font-weight: 700;
+    font-size: 13px;
+    background-color: #27b4b9 ;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+form button:hover {
+    cursor: pointer;
+    background-color: #006acd;
+    transition:  0.2s ease; /* 1s duration + 1s delay */
+}
+
+/* supervisor section */
+.formContainer2 {
+    width: 50%;
+    margin-left: 5px;
+}

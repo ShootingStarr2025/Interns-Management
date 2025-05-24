@@ -1,37 +1,60 @@
 <h3>Intern Form (stagiaireForm)</h3>
 
 <form [formGroup]="stagiaireForm" (ngSubmit)="onSubmit()">
-    <div class="subdiv">
-        <label for="name">Name:</label>
-        <input type="text" formControlName="name" id="name" />
+    <div class="formContainer">
+        <div class="subdiv">
+            <label for="name">Name:</label>
+            <input type="text" formControlName="name" id="name" />
+        </div>
+        <div class="subdiv">
+            <label for="surname">Surname:</label>
+            <input type="text" formControlName="surname" id="surname" />
+        </div>
+        <div class="subdiv">
+            <label for="profile">Profile:</label>
+            <input type="text" formControlName="profile" id="profile" />
+        </div>
+        <div class="subdiv">
+            <label for="email">Email:</label>
+            <input type="email" formControlName="email" id="email" />
+        </div>
+        <div class="subdiv">
+            <label for="number">Number:</label>
+            <input type="text" formControlName="number" id="number" />
+        </div>
+        <div class="subdiv">
+            <label for="sdate">StartDate:</label>
+            <input type="date" formControlName="startDate" id="sdate" />
+        </div>
+        <div class="subdiv">
+            <label for="edate">EndDate:</label>
+            <input type="date" formControlName="endDate" id="edate" />
+        </div>
+        <div class="subdiv">
+            <label for="provenance">Provenance:</label>
+            <input type="text" formControlName="provenance" id="provenance">
+        </div>
+        <div class="subdiv">
+            <label for="theme">Theme:</label>
+            <input type="text" formControlName="theme" id="theme">
+        </div>
+        <div class="subdiv">
+            <label for="profession">Profession:</label>
+            <input type="text" formControlName="profession" id="profession">
+        </div>
+        <button>Submit</button>
     </div>
-    <div class="subdiv">
-        <label for="surname">Surname:</label>
-        <input type="text" formControlName="surname" id="surname" />
-    </div>
-    <div class="subdiv">
-        <label for="profile">Profile:</label>
-        <input type="text" formControlName="profile" id="profile" />
-    </div>
-    <div class="subdiv">
-        <label for="email">Email:</label>
-        <input type="email" formControlName="email" id="email" />
-    </div>
-    <div class="subdiv">
-        <label for="number">Number:</label>
-        <input type="text" formControlName="number" id="number" />
-    </div>
-    <div class="subdiv">
-        <label for="sdate">StartDate:</label>
-        <input type="text" formControlName="StartDate" id="sdate" />
-    </div>
-    <div class="subdiv">
-        <label for="edate">EndDate:</label>
-        <input type="text" formControlName="EndDate" id="edate" />
-    </div>
-    <div class="subdiv">
-        <label for="provenance">Provenance:</label>
-        <input type="text" formControlName="provenance" id="provenance">
+
+    <!-- Supervisor -->
+    <div class="formContainer2" formGroupName="supervisor">
+        <div class="subdiv">
+            <label for="supervisor">Supervisor's Name:</label>
+            <input type="text"  formControlName="name" id="supervisor"> 
+        </div>
+        <div class="subdiv">
+            <label for="contact">Supervisor's contact:</label>
+            <input type="text" formControlName="contact" id="contact">
+        </div>
     </div>
 </form>
 

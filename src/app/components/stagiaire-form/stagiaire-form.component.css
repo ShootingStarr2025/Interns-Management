@@ -9,10 +9,19 @@ h3 {
     text-align: center;
 }
 
+.formContainer {
+    width: 49%;
+}
+
 form {
     display: flex;
+    flex-wrap: wrap;
     width: 100%;
     margin-left: 10px;
+}
+
+form .formContainer:first-child {
+    margin-right: 10px;
 }
 
 form .subdiv {
@@ -74,8 +83,10 @@ form button:hover {
     transition:  0.2s ease; /* 1s duration + 1s delay */
 }
 
+form button
+
 /* supervisor section */
 .formContainer2 {
     width: 50%;
-    margin-left: 5px;
+    margin-left: 10px;
 }

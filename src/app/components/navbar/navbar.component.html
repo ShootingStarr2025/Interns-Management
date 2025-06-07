@@ -1,0 +1,16 @@
+<div class="nav-container">
+  <nav class="menu">
+    <ul>
+      <li><h1>🕸Trainee System</h1></li>
+      <li *ngFor="let navList of navLists">
+        <a
+          [routerLink]="navList.path"
+          routerLinkActive="active-link"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          {{ navList.label }}
+        </a>
+      </li>
+    </ul>
+  </nav>
+</div>

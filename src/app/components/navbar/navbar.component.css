@@ -1,0 +1,61 @@
+*,
+::before,
+::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+h1 {
+  color: #000;
+}
+
+/* Style navigation bar------------------------------------- */
+.nav-container {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+  will-change: transform; /* Helps with hardware acceleration */
+  backface-visibility: hidden; /* Prevents flickering in WebKit browsers */
+  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1); /* Lighter shadow performs better */
+}
+
+.nav-container nav.menu {
+  display: grid;
+  place-items: center;
+  background-color: #fff;
+}
+
+.nav-container nav.menu ul {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  padding: 10px;
+  list-style: none;
+  background-color: rgba(255, 255, 255, 1);
+}
+
+a {
+  text-decoration: none;
+  color: #333;
+  display: block;
+  padding: 8px 12px;
+  border-radius: 5px;
+  background-color: orange;
+  transition: background-color 0.3s;
+  text-align: center;
+}
+
+.nav-container nav.menu ul li a:hover {
+  background-color: orangered;
+  color: white;
+}
+
+a.active-link {
+  background-color: red;
+  color: white;
+  font-weight: bold;
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+}

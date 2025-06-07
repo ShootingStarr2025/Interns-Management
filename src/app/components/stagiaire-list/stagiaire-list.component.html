@@ -1,1 +1,38 @@
-<p>stagiaire-list works!</p>
+<div class="container-card">
+  <div class="card" *ngFor="let listStagiaire of listStagiaires">
+    <div class="card-header">
+      <img
+        *ngIf="listStagiaire.profile"
+        [src]="listStagiaire.profile"
+        alt="profile photo"
+        width="100px"
+        height="100px"
+      />
+    </div>
+    <div class="card-body">
+      <div class="wrapper-header">
+        <h2>{{ listStagiaire.surname }} {{ listStagiaire.name }}</h2>
+        <a class="view-list" [routerLink]="['/stagiaireinfo', listStagiaire.id]"
+          >View list</a
+        >
+      </div>
+      <p><strong>Email:</strong>{{ listStagiaire.email }}</p>
+      <p><strong>Theme: </strong>{{ listStagiaire.theme }}</p>
+      <p><strong>Start-Date: </strong>{{ listStagiaire.startDate }}</p>
+      <p><strong>End-Date: </strong>{{ listStagiaire.endDate }}</p>
+      <p>
+        <strong>Internship Duration :</strong>
+        {{ getduree(listStagiaire.startDate, listStagiaire.endDate) }}
+      </p>
+    </div>
+    <div class="card-footer">
+      <button (click)="edit(listStagiaire.id)">Edit</button>
+      <button (click)="delete(listStagiaire.id)">Delete</button>
+    </div>
+  </div>
+  <!-- When loading the browser -->
+  <div class="loading" *ngIf="isLoading">loading...</div>
+  <div class="empty" *ngIf="!isLoading && listStagiaires.length === 0">
+    No registered intern
+  </div>
+</div>

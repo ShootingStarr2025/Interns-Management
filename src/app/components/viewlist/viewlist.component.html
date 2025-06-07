@@ -1,0 +1,32 @@
+<div class="container-global">
+  <div class="loading" *ngIf="isLoading">Loading...</div>
+
+  <div class="empty" *ngIf="!isLoading && !stagiaire">Intern not found</div>
+
+  <div class="stagiaire-list" *ngIf="stagiaire">
+    <div class="stagiaire">
+      <div class="photo-wrapper">
+        <img
+          [src]="stagiaire.profile || 'assets/images/default.jpg'"
+          alt="{{ stagiaire.name }}"
+          class="stagiaire-photo"
+        />
+      </div>
+      <div class="info">
+        <h3>{{ stagiaire.name }} {{ stagiaire.surname }}</h3>
+        <p><strong>Email: </strong> {{ stagiaire.email }}</p>
+        <p><strong>Number: </strong> {{ stagiaire.number }}</p>
+        <p><strong>School Education: </strong> {{ stagiaire.provenance }}</p>
+        <p><strong>StartDate: </strong> {{ stagiaire.startDate }}</p>
+        <p><strong>EndDate: </strong> {{ stagiaire.endDate }}</p>
+        <p><strong>Theme: </strong> {{ stagiaire.theme }}</p>
+        <p><strong>Field Of Expertise: </strong> {{ stagiaire.profession }}</p>
+
+        <p>
+          <strong>Duration: </strong>
+          {{ getduree(stagiaire.startDate, stagiaire.endDate) }}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

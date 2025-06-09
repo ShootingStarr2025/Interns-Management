@@ -61,8 +61,14 @@
             type="text"
             formControlName="number"
             id="number"
-            placeholder=" xxx-xxx-xxxx *"
+            maxlength="10"
+            pattern="^(05|01|07)[0-9]{8}$"
+            placeholder=" xxx-xxx-xxxx ( 10 Digits only)*"
+            (input)="restrictDigits($event)"
           />
+          <div class="error" *ngIf="isInvalidField('number')">
+            {{ getErrorMessage("number") }}
+          </div>
         </div>
 
         <div class="right">
@@ -114,9 +120,15 @@
           <input
             type="text"
             formControlName="contact"
+            maxlength="10"
+            pattern="^(05|01|07)[0-9]{8}$"
             id="contact"
-            placeholder="xxx-xxx-xxxx"
+            placeholder="xxx-xxx-xxxx (10 digits Only)"
+            (input)="restrictDigits($event)"
           />
+          <div class="error" *ngIf="isInvalidField('supervisor.contact')">
+            {{ getErrorMessage("supervisor.contact") }}
+          </div>
         </div>
       </div>
     </div>

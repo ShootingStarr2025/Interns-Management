@@ -47,6 +47,32 @@ export class StagiaireEditComponent implements OnInit {
     });
   }
 
+  // Check if field is invalid
+  isInvalidField(field: string): boolean {
+    const control = this.stagiaireForm.get(field);
+    return control
+      ? control.invalid && (control.touched || control.dirty)
+      : false;
+  }
+
+  // Display error messages for each field
+  getErrorMessage(field: string): string {
+    let control = this.stagiaireForm.get(field);
+
+    if (field === 'supervisor.contact') {
+      control = this.stagiaireForm.get(['supervisor', 'contact']);
+    }
+
+    if (control?.errors?.['required']) return 'This field is required';
+    if (control?.errors?.['email']) return 'Please enter a valid email';
+    if (control?.errors?.['pattern']) {
+      if (field === 'number') return 'Phone must be 10 digits';
+      if (field === 'supervisor.contact')
+        return 'suprvisor phone must be 10 digits';
+    }
+    return '';
+  }
+
   initialDataForm(data: any) {
     console.log(data);
     this.stagiaireForm = new FormGroup({
@@ -70,6 +96,40 @@ export class StagiaireEditComponent implements OnInit {
       profession: new FormControl(data.profession, Validators.required),
       // duration not included in here
     });
+  }
+  // Number policy rules
+  restrictDigits(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    let digitsOnly = input.value.replace(/\D/g, ''); // Only digits
+
+    // Allow up to 10 digits
+    if (digitsOnly.length > 0) {
+      digitsOnly = digitsOnly.slice(0, 10);
+    }
+
+    // Only allow digits starting with 05 07 01
+    if (digitsOnly.length >= 2 && !/^(05|07|01)/.test(digitsOnly)) {
+      // Block invalid prefix
+      digitsOnly = digitsOnly.slice(0, 2); // keep only first two digits
+      Swal.fire({
+        icon: 'warning',
+        title: 'Invalid Start',
+        text: 'Number must start with 05, 07, or 01',
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    }
+
+    input.value = digitsOnly;
+
+    const controlName = input.getAttribute('formControlName');
+    if (controlName === 'number') {
+      this.stagiaireForm.get('number')?.setValue(digitsOnly),
+        { emitEvent: false };
+    } else if (controlName === 'contact') {
+      this.stagiaireForm.get(['supervisor', 'contact'])?.setValue(digitsOnly),
+        { emitEvent: false };
+    }
   }
 
   // Convert image in 64 in order for db.json to get and stored the profile value

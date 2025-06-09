@@ -83,7 +83,7 @@
             id="number"
             placeholder="xxx-xxx-xxxx(10 digits only) *"
             maxlength="10"
-            pattern="/^(05|01|07)[0-9]{8}$/"
+            pattern="^(05|01|07)[0-9]{8}$"
             inputmode="numeric"
             (input)="restrictDigits($event)"
           />

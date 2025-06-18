@@ -6,28 +6,40 @@
     <div class="grid-section">
       <div class="divone">
         <div class="left">
-          <label for="name">First Name: </label>
-          <input
-            type="text"
-            formControlName="name"
-            id="name"
-            placeholder="Name"
-          />
+          <div class="childA">
+            <label for="name">First Name: </label>
+            <input
+              type="text"
+              formControlName="name"
+              id="name"
+              placeholder="Name"
+            />
+            <div class="error" *ngIf="isInvalidField('name')">
+              {{ getErrorMessage("name") }}
+            </div>
+          </div>
 
-          <label for="surname">Last Name: </label>
-          <input
-            type="text"
-            formControlName="surname"
-            id="surname"
-            placeholder="Surname"
-          />
+          <div class="childB">
+            <label for="surname">Last Name: </label>
+            <input
+              type="text"
+              formControlName="surname"
+              id="surname"
+              placeholder="Surname"
+            />
+            <div class="error" *ngIf="isInvalidField('surname')">
+              {{ getErrorMessage("surname") }}
+            </div>
+          </div>
         </div>
 
         <div class="right">
           <div class="picture">
             <label for="photo">
               <img
-                src="assets/images/camera.jpg"
+                [src]="
+                  selectedImage ? selectedImage : 'assets/images/camera.jpg'
+                "
                 alt="pic"
                 width="100px"
                 height="100px"
@@ -52,6 +64,9 @@
           id="email"
           placeholder="example@gmail.com *"
         />
+        <div class="error" *ngIf="isInvalidField('email')">
+          {{ getErrorMessage("email") }}
+        </div>
       </div>
 
       <div class="divone">
@@ -74,6 +89,9 @@
         <div class="right">
           <label for="provenance">School Education: </label>
           <input type="text" formControlName="provenance" id="provenance" />
+          <div class="error" *ngIf="isInvalidField('provenance')">
+            {{ getErrorMessage("provenance") }}
+          </div>
         </div>
       </div>
 
@@ -93,11 +111,17 @@
         <div class="left">
           <label for="theme">Theme: </label>
           <input type="text" formControlName="theme" id="theme" />
+          <div class="error" *ngIf="isInvalidField('theme')">
+            {{ getErrorMessage("theme") }}
+          </div>
         </div>
 
         <div class="right">
           <label for="profession">Field Of Expertise: </label>
           <input type="text" formControlName="profession" id="profession" />
+          <div class="error" *ngIf="isInvalidField('profession')">
+            {{ getErrorMessage("profession") }}
+          </div>
         </div>
       </div>
     </div>
@@ -109,10 +133,16 @@
           <label for="supervisor">Supervisor's Name:</label>
           <input
             type="text"
-            formControlName="name"
+            formControlName="supervisorname"
             id="supervisor"
             placeholder="Supervisor's name"
           />
+          <div
+            class="error"
+            *ngIf="isInvalidField('supervisor.supervisorname')"
+          >
+            {{ getErrorMessage("supervisor.supervisorname") }}
+          </div>
         </div>
 
         <div class="right">

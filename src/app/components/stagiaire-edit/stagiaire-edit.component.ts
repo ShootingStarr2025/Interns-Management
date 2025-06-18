@@ -40,6 +40,8 @@ export class StagiaireEditComponent implements OnInit {
         }
 
         this.initialDataForm(data);
+        this.selectedImage = data.profile;
+        console.log('stagiaire: ', data);
       },
       error: () => {
         this.router.navigate(['/']);
@@ -58,6 +60,12 @@ export class StagiaireEditComponent implements OnInit {
   // Display error messages for each field
   getErrorMessage(field: string): string {
     let control = this.stagiaireForm.get(field);
+
+    if (control?.hasError('pattern')) {
+      if (field === 'email') {
+        return 'Please enter a valid email address';
+      }
+    }
 
     if (field === 'supervisor.contact') {
       control = this.stagiaireForm.get(['supervisor', 'contact']);
@@ -81,14 +89,20 @@ export class StagiaireEditComponent implements OnInit {
       profile: new FormControl(data.profile, Validators.required),
       email: new FormControl(data.email, [
         Validators.required,
-        Validators.email,
+        Validators.pattern('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'),
       ]),
-      number: new FormControl(data.number, [Validators.pattern('^[0-9]{10}$')]),
+      number: new FormControl(data.number, [
+        Validators.required,
+        Validators.pattern('^[0-9]{10}$'),
+      ]),
       startDate: new FormControl(data.startDate, Validators.required),
       endDate: new FormControl(data.endDate, Validators.required),
       provenance: new FormControl(data.provenance, Validators.required),
       supervisor: new FormGroup({
-        name: new FormControl(data.supervisor.name, Validators.required),
+        supervisorname: new FormControl(
+          data.supervisor.supervisorname,
+          Validators.required
+        ),
         contact: new FormControl(data.supervisor.contact, Validators.required),
       }),
 
@@ -97,6 +111,7 @@ export class StagiaireEditComponent implements OnInit {
       // duration not included in here
     });
   }
+
   // Number policy rules
   restrictDigits(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -113,7 +128,7 @@ export class StagiaireEditComponent implements OnInit {
       digitsOnly = digitsOnly.slice(0, 2); // keep only first two digits
       Swal.fire({
         icon: 'warning',
-        title: 'Invalid Start',
+        title: 'Number Invalid',
         text: 'Number must start with 05, 07, or 01',
         timer: 2000,
         showConfirmButton: false,
@@ -137,10 +152,35 @@ export class StagiaireEditComponent implements OnInit {
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
+    if (input.files && input.files[0]) {
       const file = input.files[0];
-      const reader = new FileReader();
 
+      // First: check type
+      if (!file.type.startsWith('image/')) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Invalid File Type',
+          text: 'Only image files are allowed',
+          timer: 2500,
+          showConfirmButton: false,
+        });
+        return;
+      }
+
+      // Second: check size before FileReader is called
+      if (file.size > 1024 * 1024) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'File Too Large',
+          text: 'Image must be less than 1MB',
+          timer: 2500,
+          showConfirmButton: false,
+        });
+        return;
+      }
+
+      // Only now: read the file
+      const reader = new FileReader();
       reader.onload = () => {
         if (typeof reader.result === 'string') {
           this.selectedImage = reader.result;
@@ -159,49 +199,78 @@ export class StagiaireEditComponent implements OnInit {
         }
       };
 
-      console.log('file', this.stagiaireForm);
-      if (!file.type.startsWith('image/')) {
-        alert('Only image files are allowed');
-        return;
-      }
-
-      if (file.size > 1024 * 1024) {
-        alert('Image must be less than 1MB');
-        return;
-      }
-
       reader.readAsDataURL(file);
     }
   }
 
   // Request confirmation from user before proceeding to changes
   onSubmit() {
-    const confirmation = confirm('Do you wanna proceed with the changes?');
+    if (this.stagiaireForm.invalid) {
+      this.stagiaireForm.markAllAsTouched();
+      return; // Stop here if form is invalid
+    }
 
-    // If cancelled, gets out of the function
-    if (!confirmation) return;
+    Swal.fire({
+      title: 'Warning',
+      text: 'Do you wanna apply the changes?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes',
+      cancelButtonText: 'No',
+      confirmButtonColor: '#FC6A03',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // get values of form
+        const updatedStagiaire = this.stagiaireForm.value;
 
-    // Get Values entered in the form
-    const updatedStagiaire = this.stagiaireForm.value;
+        // Call the service method to update the database
+        this.stagiaireService
+          .updateStagiaire(this.stagiaireId, updatedStagiaire)
+          .subscribe({
+            // If updated
+            next: () => {
+              // Swal.fire({
+              //   icon: 'success',
+              //   title: 'updated',
+              //   text: 'Stagiaire updated successfully!',
+              //   timer: 2000,
+              //   showConfirmButton: false,
+              // });
 
-    // Call a service method to update the database
-    this.stagiaireService
-      .updateStagiaire(this.stagiaireId, updatedStagiaire)
-      .subscribe({
-        // If updated
-        next: () => {
-          //Display an alert
-          alert('Data updated');
-          //Redirect to the homepage / intern List
-          this.router.navigate(['/']);
-        },
-        // If error occurred during update
-        error: (errors) => {
-          // Display alert through a message
-          alert(
-            'Error occurred during update:' + (errors?.message || 'Unknown')
-          );
-        },
-      });
+              Swal.fire({
+                icon: 'success',
+                title: 'updated',
+                text: 'Stagiaire updated successfully!',
+                confirmButtonColor: '#ff9800',
+              });
+              const Toast = Swal.mixin({
+                toast: true,
+                position: 'center',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.onmouseenter = Swal.stopTimer;
+                  toast.onmouseleave = Swal.resumeTimer;
+                },
+              });
+              Toast.fire({
+                icon: 'success',
+                title: 'Saved successfully',
+              }).then(() => {
+                this.stagiaireForm.reset();
+                this.router.navigate(['/']);
+              });
+            },
+            error: (errors) => {
+              Swal.fire({
+                icon: 'error',
+                title: 'Update Failed',
+                text: `Error occurred: ${errors?.message || 'Unknown error'}`,
+              });
+            },
+          });
+      }
+    });
   }
 }

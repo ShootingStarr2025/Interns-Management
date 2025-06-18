@@ -1,62 +1,79 @@
-<!-- add padding to div container stagiaireform -->
 <div class="container-global">
   <h3>Intern Form (stagiaireForm)</h3>
 
   <form [formGroup]="stagiaireForm" (ngSubmit)="onSubmit()" class="grid">
-    <div
+    <!-- <div
       class="form-error"
       *ngIf="formIsCompletelyEmpty"
       (click)="dismissFormError()"
     >
       ⚠️ Please fill in all fields before submitting.
-    </div>
+    </div> -->
     <h5 class="title">Basic Details</h5>
     <div class="grid-section">
       <div class="divone">
         <div class="left">
-          <label for="name">First Name: </label>
-          <input
-            type="text"
-            formControlName="name"
-            id="name"
-            placeholder="first name"
-          />
-          <div class="error" *ngIf="isFieldInvalid('name')">
-            {{ getErrorMessage("name") }}
+          <div class="childA">
+            <label for="name">First Name: </label>
+            <input
+              type="text"
+              formControlName="name"
+              id="name"
+              placeholder="first name *"
+              (input)="onlyAllowLetters($event)"
+            />
+            <div
+              class="form-error"
+              *ngIf="
+                stagiaireForm.get('name')?.invalid &&
+                stagiaireForm.get('name')?.touched
+              "
+            >
+              *First Name is required
+            </div>
           </div>
 
-          <label for="surname">Last Name: </label>
-          <input
-            type="text"
-            formControlName="surname"
-            id="surname"
-            placeholder="Last Name"
-          />
-          <div class="error" *ngIf="isFieldInvalid('surname')">
-            {{ getErrorMessage("surname") }}
+          <div>
+            <label for="surname">Last Name: </label>
+            <input
+              type="text"
+              formControlName="surname"
+              id="surname"
+              placeholder="Last Name *"
+              (input)="onlyAllowLetters($event)"
+            />
+            <div
+              class="form-error"
+              *ngIf="
+                stagiaireForm.get('surname')?.invalid &&
+                stagiaireForm.get('surname')?.touched
+              "
+            >
+              * Last Name is required
+            </div>
           </div>
         </div>
 
         <div class="right">
+          <small class="format-note"
+            >Allowed formats: JPG, PNG (max 1MB)
+          </small>
           <div class="picture">
             <label for="photo">
-              <img src="assets/images/camera.jpg" alt="pic" />
+              <img
+                [src]="
+                  selectedImage ? selectedImage : 'assets/images/camera.jpg'
+                "
+              />
               <span>Add Photo</span>
             </label>
             <input
               type="file"
               id="photo"
-              (change)="onFileSelected($event)"
+              (input)="onFileSelected($event)"
               accept="image/jpg, image/png, image/jpeg"
               hidden
             />
-            <small class="format-note"
-              >Allowed formats: JPG, PNG (max 1MB)</small
-            >
-          </div>
-          <div class="preview" *ngIf="selectedImage">
-            <p>Preview</p>
-            <img [src]="selectedImage" alt="Selected Image" />
           </div>
         </div>
       </div>
@@ -69,8 +86,21 @@
           id="email"
           placeholder="example@gmail.com *"
         />
-        <div class="error" *ngIf="isFieldInvalid('email')">
-          {{ getErrorMessage("email") }}
+        <div
+          class="form-error"
+          *ngIf="
+            stagiaireForm.get('email')?.invalid &&
+            stagiaireForm.get('email')?.touched
+          "
+        >
+          <ng-container
+            *ngIf="stagiaireForm.get('email')?.errors?.['required']"
+          >
+            * Email is required
+          </ng-container>
+          <ng-container *ngIf="stagiaireForm.get('email')?.errors?.['pattern']">
+            Please enter a valid email address
+          </ng-container>
         </div>
       </div>
 
@@ -83,20 +113,44 @@
             id="number"
             placeholder="xxx-xxx-xxxx(10 digits only) *"
             maxlength="10"
-            pattern="^(05|01|07)[0-9]{8}$"
             inputmode="numeric"
-            (input)="restrictDigits($event)"
+            (input)="restrictsDigits($event)"
           />
-          <div class="error" *ngIf="isFieldInvalid('number')">
-            {{ getErrorMessage("number") }}
+          <div
+            class="form-error"
+            *ngIf="
+              stagiaireForm.get('number')?.invalid &&
+              stagiaireForm.get('number')?.touched
+            "
+          >
+            <ng-container
+              *ngIf="stagiaireForm.get('number')?.errors?.['required']"
+              >*Number is required
+            </ng-container>
+            <ng-container
+              *ngIf="stagiaireForm.get('number')?.errors?.['pattern']"
+            >
+              *Number must start with 05, 01, or 07
+            </ng-container>
           </div>
         </div>
 
         <div class="right">
           <label for="provenance">School Education: </label>
-          <input type="text" formControlName="provenance" id="provenance" />
-          <div class="error" *ngIf="isFieldInvalid('provenance')">
-            {{ getErrorMessage("provenance") }}
+          <input
+            type="text"
+            formControlName="provenance"
+            id="provenance"
+            (input)="onlyAllowLetters($event)"
+          />
+          <div
+            class="form-error"
+            *ngIf="
+              stagiaireForm.get('provenance')?.invalid &&
+              stagiaireForm.get('provenance')?.touched
+            "
+          >
+            * Education is required
           </div>
         </div>
       </div>
@@ -105,16 +159,28 @@
         <div class="begining">
           <label for="sdate">StartDate: </label>
           <input type="date" formControlName="startDate" id="sdate" />
-          <div class="error" *ngIf="isFieldInvalid('startDate')">
-            {{ getErrorMessage("startDate") }}
+          <div
+            class="form-error"
+            *ngIf="
+              stagiaireForm.get('startDate')?.invalid &&
+              stagiaireForm.get('startDate')?.touched
+            "
+          >
+            *Start Date is required
           </div>
         </div>
 
         <div class="ending">
           <label for="edate">EndDate: </label>
           <input type="date" formControlName="endDate" id="edate" />
-          <div class="error" *ngIf="isFieldInvalid('endDate')">
-            {{ getErrorMessage("endDate") }}
+          <div
+            class="form-error"
+            *ngIf="
+              stagiaireForm.get('endDate')?.invalid &&
+              stagiaireForm.get('endDate')?.touched
+            "
+          >
+            *End date is required
           </div>
         </div>
       </div>
@@ -122,17 +188,39 @@
       <div class="divone">
         <div class="left">
           <label for="theme">Theme: </label>
-          <input type="text" formControlName="theme" id="theme" />
-          <div class="error" *ngIf="isFieldInvalid('theme')">
-            {{ getErrorMessage("theme") }}
+          <input
+            type="text"
+            formControlName="theme"
+            id="theme"
+            (input)="onlyAllowLetters($event)"
+          />
+          <div
+            class="form-error"
+            *ngIf="
+              stagiaireForm.get('theme')?.invalid &&
+              stagiaireForm.get('theme')?.touched
+            "
+          >
+            *Theme is required
           </div>
         </div>
 
         <div class="right">
           <label for="profession">Field Of Expertise: </label>
-          <input type="text" formControlName="profession" id="profession" />
-          <div class="error" *ngIf="isFieldInvalid('profession')">
-            {{ getErrorMessage("profession") }}
+          <input
+            type="text"
+            formControlName="profession"
+            id="profession"
+            (input)="onlyAllowLetters($event)"
+          />
+          <div
+            class="form-error"
+            *ngIf="
+              stagiaireForm.get('profession')?.invalid &&
+              stagiaireForm.get('profession')?.touched
+            "
+          >
+            *Field is required
           </div>
         </div>
       </div>
@@ -142,15 +230,22 @@
     <div class="grid-section" formGroupName="supervisor">
       <div class="divone">
         <div class="left">
-          <label for="supervisor">Supervisor's Name: </label>
+          <label for="supervisorName">Supervisor's Name: </label>
           <input
             type="text"
-            formControlName="name"
-            id="supervisor"
+            formControlName="supervisorname"
+            id="supervisorName"
             placeholder="Supervisor's name"
+            (input)="onlyAllowLetters($event)"
           />
-          <div class="error" *ngIf="isFieldInvalid('supervisor.name')">
-            {{ getErrorMessage("supervisor.name") }}
+          <div
+            class="form-error"
+            *ngIf="
+              stagiaireForm.get(['supervisor', 'supervisorname'])?.invalid &&
+              stagiaireForm.get(['supervisor', 'supervisorname'])?.touched
+            "
+          >
+            *Supervsior's Name required
           </div>
         </div>
 
@@ -162,12 +257,25 @@
             id="contact"
             placeholder="xxx-xxx-xxxx(10 digits only)"
             maxlength="10"
-            pattern="[0-9]*"
             inputmode="numeric"
-            (input)="restrictDigits($event)"
+            (input)="restrictsDigits($event)"
           />
-          <div class="error" *ngIf="isFieldInvalid('supervisor.contact')">
-            {{ getErrorMessage("supervisor.contact") }}
+          <div
+            class="form-error"
+            *ngIf="
+              stagiaireForm.get('supervisor.contact')?.invalid &&
+              stagiaireForm.get('supervisor.contact')?.touched
+            "
+          >
+            <ng-container
+              *ngIf="stagiaireForm.get('supervisor.contact')?.errors?.['required']"
+            >
+              *Supervisor's contact is required
+            </ng-container>
+            <ng-container
+              *ngIf="stagiaireForm.get('supervisor.contact')?.errors?.['pattern']"
+              >* Number must start with 05, 01 or 07
+            </ng-container>
           </div>
         </div>
       </div>

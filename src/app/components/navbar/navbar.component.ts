@@ -4,29 +4,27 @@ import { RouterLink, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterModule,CommonModule, RouterLink],
+  imports: [RouterModule, CommonModule, RouterLink],
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css'
+  styleUrl: './navbar.component.css',
 })
 export class NavbarComponent {
-
   navLists = [
     {
-      path: "",
-      label: "Home"
+      path: '',
+      label: 'Home',
     },
     {
-      path: "add",
-      label: "Add a Trainee"
+      path: 'add',
+      label: 'Add a Trainee',
     },
-    {
-      path: "Contact",
-      label: "Contact Us"
-    },
-    {
-      path: "Aboutme",
-      label: "About Me"
-    }
-    
-  ]
+    // {
+    //   path: "Contact",
+    //   label: "Contact Us"
+    // },
+    // {
+    //   path: "Aboutme",
+    //   label: "About Me"
+    // }
+  ];
 }

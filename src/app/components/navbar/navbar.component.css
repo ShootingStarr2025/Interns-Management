@@ -28,12 +28,18 @@ h1 {
 }
 
 .nav-container nav.menu ul {
-  display: grid;
+  /* display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
-  padding: 10px;
+  gap: 10px; */
+  padding: 10px 250px;
   list-style: none;
   background-color: rgba(255, 255, 255, 1);
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  background-color: red;
 }
 
 a {
@@ -58,4 +64,17 @@ a.active-link {
   font-weight: bold;
   border-radius: 5px;
   padding: 0.5rem 1rem;
+}
+
+/* Style the title-------------------------------------------- */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 10px;
+  /* width: 100%; */
 }

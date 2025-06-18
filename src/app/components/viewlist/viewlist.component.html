@@ -3,30 +3,93 @@
 
   <div class="empty" *ngIf="!isLoading && !stagiaire">Intern not found</div>
 
+  <h1>Trainee Info</h1>
   <div class="stagiaire-list" *ngIf="stagiaire">
-    <div class="stagiaire">
+    <div class="leftinfo">
       <div class="photo-wrapper">
         <img
           [src]="stagiaire.profile || 'assets/images/default.jpg'"
           alt="{{ stagiaire.name }}"
           class="stagiaire-photo"
         />
+        <div class="stagiairename">
+          <h3>{{ stagiaire.name }} {{ stagiaire.surname }}</h3>
+        </div>
       </div>
-      <div class="info">
-        <h3>{{ stagiaire.name }} {{ stagiaire.surname }}</h3>
-        <p><strong>Email: </strong> {{ stagiaire.email }}</p>
-        <p><strong>Number: </strong> {{ stagiaire.number }}</p>
-        <p><strong>School Education: </strong> {{ stagiaire.provenance }}</p>
-        <p><strong>StartDate: </strong> {{ stagiaire.startDate }}</p>
-        <p><strong>EndDate: </strong> {{ stagiaire.endDate }}</p>
-        <p><strong>Theme: </strong> {{ stagiaire.theme }}</p>
-        <p><strong>Field Of Expertise: </strong> {{ stagiaire.profession }}</p>
 
+      <div class="traineeinfo">
+        <div class="trainee">
+          <img
+            src="assets/images/email.svg"
+            alt="picture1"
+            width="20x"
+            height="20px"
+          />
+          <p>
+            Email: <span>{{ stagiaire.email }}</span>
+          </p>
+        </div>
+
+        <div class="trainee">
+          <img
+            src="assets/images/contact.svg"
+            alt="picture2"
+            width="20x"
+            height="20px"
+          />
+          <p>
+            Number: <span>{{ stagiaire.number }}</span>
+          </p>
+        </div>
+
+        <div class="trainee">
+          <img
+            src="assets/images/school.svg"
+            alt="picture3"
+            width="20px"
+            height="20px"
+          />
+          <p>
+            School Education: <span>{{ stagiaire.provenance }}</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="rightinfo">
+      <div class="items">
         <p>
-          <strong>Duration: </strong>
-          {{ getduree(stagiaire.startDate, stagiaire.endDate) }}
+          StartDate: <span>{{ stagiaire.startDate }}</span>
+        </p>
+        <p>
+          EndDate: <span>{{ stagiaire.endDate }}</span>
+        </p>
+        <p>
+          Theme: <span>{{ stagiaire.theme }}</span>
+        </p>
+      </div>
+
+      <div class="items">
+        <p>
+          Field Of Expertise: <span>{{ stagiaire.profession }}</span>
+        </p>
+        <p>
+          Supervisor's Name:
+          <span>{{ stagiaire.supervisor.supervisorname }}</span>
+        </p>
+        <p>
+          Supervisor's Contact:
+          <span> {{ stagiaire.supervisor.contact }} </span>
+        </p>
+      </div>
+
+      <div class="items">
+        <p>
+          Duration:
+          <span>{{ getduree(stagiaire.startDate, stagiaire.endDate) }}</span>
         </p>
       </div>
     </div>
+    <div class="chevron"></div>
   </div>
 </div>

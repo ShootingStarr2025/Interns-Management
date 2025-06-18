@@ -14,6 +14,10 @@ form {
   position: relative;
 }
 
+.picture span {
+  font-size: 12px;
+}
+
 h3 {
   text-align: center;
 }
@@ -22,6 +26,10 @@ h3 {
   font-weight: 600;
   font-size: 1.2rem;
   margin: 10px 0 0 10px;
+}
+
+.left .childA {
+  margin-bottom: 20px;
 }
 
 /* Style Picture ............................................................... */
@@ -39,11 +47,12 @@ h3 {
 }
 
 .picture img {
-  width: 150px; /* Bigger image */
+  width: 350px; /* Bigger image */
   height: 150px;
   object-fit: cover;
   border-radius: 8px; /* Rounded corners */
   margin-bottom: 8px;
+  margin-top: 30px;
 }
 
 /* Style grid section------------------------ */
@@ -75,13 +84,35 @@ label[for="photo"] {
 }
 
 /* Style divone & divdates inside grid section----------------- */
-.divone {
+/* .divone {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
 }
 
 .divone .left {
   margin-right: 10px;
+}
+
+.divone .left:nth-of-type(2) {
+  background-color: red;
+} */
+
+.divone {
+  display: flex;
+  justify-content: space-between;
+}
+
+.divone .left,
+.divone .right {
+  flex: 0 0 48%;
+  display: flex;
+  flex-direction: column;
+}
+
+.divone .left label,
+.divone .right label {
+  margin-bottom: 5px;
+  font-weight: 500;
 }
 
 .divone .left label {
@@ -120,6 +151,8 @@ input[type="date"] {
   width: 100%;
   font-size: 20px;
   border-radius: 17px;
+  outline: none;
+  border: 1px solid gray;
 }
 
 input::placeholder {
@@ -171,11 +204,8 @@ input:focus {
   font-size: 0.85rem;
 }
 
-/* Style sweetalert2 popups */
-.small-popup {
-  width: 100px !important; /* Adjust to your preferred size */
-  padding: 1.2rem !important;
-  border-radius: 0.5rem;
+input.ng-invalid.ng-touched {
+  border: 1px solid red;
 }
 
 /* Style preview image */

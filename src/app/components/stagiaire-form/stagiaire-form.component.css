@@ -14,6 +14,14 @@ form {
   position: relative;
 }
 
+.format-note {
+  font-size: 10px;
+}
+
+.picture span {
+  font-size: 12px;
+}
+
 h3 {
   text-align: center;
 }
@@ -39,11 +47,12 @@ h3 {
 }
 
 .picture img {
-  width: 150px; /* Bigger image */
+  width: 360px; /* Bigger image */
   height: 150px;
   object-fit: cover;
   border-radius: 8px; /* Rounded corners */
   margin-bottom: 8px;
+  margin-top: 20px;
 }
 
 /* Style grid section------------------------ */
@@ -75,7 +84,7 @@ label[for="photo"] {
 }
 
 /* Style divone & divdates inside grid section----------------- */
-.divone {
+/* .divone {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
 }
@@ -87,6 +96,24 @@ label[for="photo"] {
 .divone .left label {
   display: block;
   margin-bottom: 3px;
+} */
+
+.divone {
+  display: flex;
+  justify-content: space-between;
+}
+
+.divone .left,
+.divone .right {
+  flex: 0 0 48%;
+  display: flex;
+  flex-direction: column;
+}
+
+.divone .left label,
+.divone .right label {
+  margin-bottom: 5px;
+  font-weight: 500;
 }
 
 form label {
@@ -111,7 +138,11 @@ input[type="email"] {
   background: linear-gradient(to right, #f2f3f4, #e3ece6);
 }
 
-.divdates .begining input {
+.left .childA {
+  margin-bottom: 20px;
+}
+
+.divdates {
   margin-bottom: 20px;
 }
 
@@ -120,6 +151,8 @@ input[type="date"] {
   width: 100%;
   font-size: 20px;
   border-radius: 17px;
+  border: none;
+  border: 1px solid gray;
 }
 
 input::placeholder {
@@ -190,26 +223,18 @@ input:focus {
 
 /* General error-message ----------------------------------------*/
 .form-error {
+  color: #ff0000;
+}
+
+.format-note {
   display: flex;
   justify-content: center;
   align-items: center;
-  position: fixed;
+  color: #ff0000;
+}
 
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #ffe6e6;
-  max-width: 90%;
-  width: max-content;
-  color: #b71c1c;
-  padding: 10px 15px;
-  height: 200px;
-
-  border: 1px solid #b71c1c;
-  border-radius: 5px;
-  font-weight: bold;
-  animation: fadeDown 0.4s ease-out;
-  z-index: 1000;
+input.ng-invalid.ng-touched {
+  border: 1px solid red;
 }
 
 @keyframes fadeDown {

@@ -9,6 +9,7 @@ import { StagiaireService } from '../../services/stagiaire.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
+import { CustomValidators } from '../../validators/custom-validators';
 
 @Component({
   selector: 'app-stagiaire-form',
@@ -30,18 +31,29 @@ export class StagiaireFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.stagiaireForm = new FormGroup({
-      name: new FormControl(null, Validators.required),
-      surname: new FormControl(null, Validators.required),
+      name: new FormControl(null, [
+        Validators.required,
+        CustomValidators.validTextWithSpaces,
+      ]),
+      surname: new FormControl(null, [
+        Validators.required,
+        CustomValidators.noOnlySpaces,
+      ]),
       profile: new FormControl(null, Validators.required),
       email: new FormControl(null, [
         Validators.required,
-        Validators.pattern('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'),
+        Validators.pattern(
+          /^(?!.*\s)(?!.*\.\.)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+        ),
       ]),
       number: new FormControl(null, [
         Validators.required,
         Validators.pattern(/^(05|01|07)[0-9]{8}$/),
       ]),
-      provenance: new FormControl(null, Validators.required),
+      provenance: new FormControl(null, [
+        Validators.required,
+        CustomValidators.validTextAndDigitsWithSpaces,
+      ]),
       startDate: new FormControl(null, Validators.required),
       endDate: new FormControl(null, Validators.required),
       theme: new FormControl(null, Validators.required),
@@ -55,41 +67,99 @@ export class StagiaireFormComponent implements OnInit {
       }),
     });
 
-    this.stagiaireForm.get('startDate')?.valueChanges.subscribe(() => {
-      this.calculateDuration();
+    // Step 1: Enable / Disable endDate based on structure
+    this.stagiaireForm.get('startDate')?.valueChanges.subscribe((start) => {
+      const endDateControl = this.stagiaireForm.get('endDate');
+
+      if (start) {
+        endDateControl?.enable();
+      } else {
+        endDateControl?.disable();
+        endDateControl?.reset();
+        this.duration = null;
+      }
     });
 
+    // Still keep this if needed
     this.stagiaireForm.get('endDate')?.valueChanges.subscribe(() => {
       this.calculateDuration();
     });
+
+    // ✅ Make sure endDate is disabled initially
+    this.stagiaireForm.get('endDate')?.disable();
   }
 
+  // RemoveEmailSpaces...................................................
+  removeEmailSpaces(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    input.value = input.value.replace(/\s+/g, '');
+
+    this.stagiaireForm
+      .get('email')
+      ?.setValue(input.value, { emitEvent: false });
+  }
+
+  // Calculate Duration............................................
   calculateDuration() {
     const start = this.stagiaireForm.get('startDate')?.value;
     const end = this.stagiaireForm.get('endDate')?.value;
 
-    if (start && end) {
-      const startDate = new Date(start);
-      const endDate = new Date(end);
+    if (!start || !end) return;
 
-      if (endDate >= startDate) {
-        const diffTime = endDate.getTime() - startDate.getTime(); // milliseconds
-        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)); // Convert to days
+    const startDate = new Date(start);
+    const endDate = new Date(end);
 
-        const months = Math.floor(diffDays / 30); // Rough month
-        const days = diffDays % 30;
-
-        if (months > 0) {
-          this.duration = `${months} month${months > 1 ? 's' : ''}`;
-        } else {
-          this.duration = `${days} day${days !== 1 ? 's' : ''}`;
-        }
-      } else {
-        this.duration = null; // end date is before start date
-      }
-    } else {
-      this.duration = null;
+    // Handle Invalid date input
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      this.stagiaireForm.get('duration')?.setValue('');
+      return;
     }
+
+    //Show error if end < start
+    if (endDate < startDate) {
+      this.stagiaireForm.get('duration')?.setValue('');
+      Swal.fire({
+        icon: 'error',
+        title: 'Invalid Date Range',
+        text: 'End date cannot be before start date.',
+        confirmButtonColor: '#d32f2f',
+      });
+      this.stagiaireForm.get('endDate')?.reset();
+      return;
+    }
+
+    //Show warning if dates are equal
+    if (startDate.getTime() === endDate.getTime()) {
+      this.stagiaireForm.get('duration')?.setValue('');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Same Dates Selected',
+        text: 'Start and end dates must be different.',
+        confirmButtonColor: '#f57c00',
+      });
+      this.stagiaireForm.get('endDate')?.reset();
+      return;
+    }
+
+    // Check see if duration is lesser than 30 days
+    const diffMs = endDate.getTime() - startDate.getTime(); // milliseconds
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    if (diffDays < 30) {
+      this.stagiaireForm.get('duration')?.setValue('');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Duration Too Short',
+        text: 'The duration must be at least 30 days.',
+        confirmButtonColor: '#f57c00',
+      });
+      this.stagiaireForm.get('endDate')?.reset();
+      return;
+    }
+
+    // Set duration
+    const duration = diffDays;
+    this.stagiaireForm.get('duration')?.setValue(duration);
   }
 
   // Convert image in base64
@@ -143,18 +213,25 @@ export class StagiaireFormComponent implements OnInit {
     console.log(this.selectedImage);
   }
 
-  onlyAllowLetters(event: Event): void {
+  onlyAllowLetters(event: Event, controlName?: string): void {
     const input = event.target as HTMLInputElement;
-    input.value = input.value.replace(/[^a-zA-ZÀ-ÿ\s'-]/g, ''); // Allow letters, accents, space
+    // 1. Allow letters (with accents) and spaces only
+    let cleaned = input.value.replace(/[^A-Za-zÀ-ÿ\s]/g, '');
 
-    const controlName = input.getAttribute('formControlName');
+    // 2. Replace multiple spaces with a single space (optional)
+    cleaned = cleaned.replace(/\s{2,}/g, ' ');
+
+    // Update both input display and form control
+    input.value = cleaned;
+
     if (controlName) {
       this.stagiaireForm
         .get(controlName)
-        ?.setValue(input.value, { emitEvent: false });
+        ?.setValue(cleaned, { emitEvent: false });
     }
   }
 
+  //Digits Restrictions Policy
   restrictsDigits(event: Event): void {
     const input = event.target as HTMLInputElement;
     console.log('InputElement');
@@ -177,7 +254,6 @@ export class StagiaireFormComponent implements OnInit {
         timer: 2000,
         showConfirmButton: false,
       });
-
       input.value = digitsOnly;
     }
 
@@ -190,6 +266,25 @@ export class StagiaireFormComponent implements OnInit {
       this.stagiaireForm
         .get(['supervisor', 'contact'])
         ?.setValue(digitsOnly, { emitEvent: false });
+    }
+  }
+
+  onlyAllowLettersAndDigits(event: Event, controlName?: string) {
+    const input = event.target as HTMLInputElement;
+
+    let cleaned = input.value;
+
+    // remove all leading space but allow space between letters
+    cleaned = cleaned
+      .replace(/[^A-Za-zÀ-ÿ0-9\s]/g, '') // keep letters (with accents), digits, and spaces
+      .replace(/\s{2,}/g, ' ') // collapse multiple spaces
+      .replace(/^\s+/, ''); // remove leading spaces
+    input.value = cleaned;
+
+    if (controlName) {
+      this.stagiaireForm
+        .get(controlName)
+        ?.setValue(cleaned, { emitEvent: false });
     }
   }
 

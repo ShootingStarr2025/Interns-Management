@@ -14,13 +14,15 @@
       <div class="divone">
         <div class="left">
           <div class="childA">
-            <label for="name">First Name: </label>
+            <label for="name"
+              >First Name: <span class="redstar">*</span>
+            </label>
             <input
               type="text"
               formControlName="name"
               id="name"
-              placeholder="first name *"
-              (input)="onlyAllowLetters($event)"
+              placeholder="First Name"
+              (input)="onlyAllowLetters($event, 'name')"
             />
             <div
               class="form-error"
@@ -29,18 +31,27 @@
                 stagiaireForm.get('name')?.touched
               "
             >
-              *First Name is required
+              <ng-container
+                *ngIf="stagiaireForm.get('name')?.errors?.['required']"
+                >* First Name is required
+              </ng-container>
+              <ng-container
+                *ngIf="stagiaireForm.get('name')?.errors?.['invalidTextFormat']"
+                >* No leading or multiple spaces allowed
+              </ng-container>
             </div>
           </div>
 
           <div>
-            <label for="surname">Last Name: </label>
+            <label for="surname"
+              >Last Name: <span class="redstar">*</span></label
+            >
             <input
               type="text"
               formControlName="surname"
               id="surname"
-              placeholder="Last Name *"
-              (input)="onlyAllowLetters($event)"
+              placeholder="Last Name"
+              (input)="onlyAllowLetters($event, 'surname')"
             />
             <div
               class="form-error"
@@ -49,7 +60,14 @@
                 stagiaireForm.get('surname')?.touched
               "
             >
-              * Last Name is required
+              <ng-container
+                *ngIf="stagiaireForm.get('surname')?.errors?.['required']"
+                >* Last Name is required
+              </ng-container>
+              <ng-container
+                *ngIf="stagiaireForm.get('surname')?.errors?.['invalidTextFormat']"
+                >* No leading or multiple spaces allowed
+              </ng-container>
             </div>
           </div>
         </div>
@@ -74,17 +92,31 @@
               accept="image/jpg, image/png, image/jpeg"
               hidden
             />
+            <div
+              class="form-error"
+              *ngIf="
+                stagiaireForm.get('profile')?.invalid &&
+                stagiaireForm.get('profile')?.touched
+              "
+            >
+              <ng-container
+                *ngIf="stagiaireForm.get('profile')?.errors?.['required']"
+              >
+                * Picture is missing
+              </ng-container>
+            </div>
           </div>
         </div>
       </div>
 
       <div class="mail">
-        <label for="email">Email: </label>
+        <label for="email">Email: <span class="redstar">*</span></label>
         <input
           type="email"
           formControlName="email"
           id="email"
-          placeholder="example@gmail.com *"
+          placeholder="example@gmail.com"
+          (input)="removeEmailSpaces($event)"
         />
         <div
           class="form-error"
@@ -106,12 +138,12 @@
 
       <div class="divone">
         <div class="left">
-          <label for="number">Number: </label>
+          <label for="number">Number: <span class="redstar">*</span></label>
           <input
             type="text"
             formControlName="number"
             id="number"
-            placeholder="xxx-xxx-xxxx(10 digits only) *"
+            placeholder="xxx-xxx-xxxx(10 digits only) "
             maxlength="10"
             inputmode="numeric"
             (input)="restrictsDigits($event)"
@@ -136,12 +168,14 @@
         </div>
 
         <div class="right">
-          <label for="provenance">School Education: </label>
+          <label for="provenance"
+            >School Education: <span class="redstar">*</span>
+          </label>
           <input
             type="text"
             formControlName="provenance"
             id="provenance"
-            (input)="onlyAllowLetters($event)"
+            (input)="onlyAllowLettersAndDigits($event, 'provenance')"
           />
           <div
             class="form-error"
@@ -150,14 +184,23 @@
               stagiaireForm.get('provenance')?.touched
             "
           >
-            * Education is required
+            <ng-container
+              *ngIf="stagiaireForm.get('provenance')?.errors?.['required']"
+              >* Provenance field is required
+            </ng-container>
+            <ng-container
+              *ngIf="stagiaireForm.get('provenance')?.errors?.['invalidTextAndDigitsFormat']"
+            >
+              * Only letters, digits, and single spaces allowed (no leading or
+              double spaces)
+            </ng-container>
           </div>
         </div>
       </div>
 
       <div class="divdates">
         <div class="begining">
-          <label for="sdate">StartDate: </label>
+          <label for="sdate">StartDate: <span class="redstar">*</span></label>
           <input type="date" formControlName="startDate" id="sdate" />
           <div
             class="form-error"
@@ -171,7 +214,7 @@
         </div>
 
         <div class="ending">
-          <label for="edate">EndDate: </label>
+          <label for="edate">EndDate: <span class="redstar">*</span> </label>
           <input type="date" formControlName="endDate" id="edate" />
           <div
             class="form-error"
@@ -187,12 +230,12 @@
 
       <div class="divone">
         <div class="left">
-          <label for="theme">Theme: </label>
+          <label for="theme">Theme: <span class="redstar">*</span></label>
           <input
             type="text"
             formControlName="theme"
             id="theme"
-            (input)="onlyAllowLetters($event)"
+            (input)="onlyAllowLetters($event, 'theme')"
           />
           <div
             class="form-error"
@@ -201,17 +244,19 @@
               stagiaireForm.get('theme')?.touched
             "
           >
-            *Theme is required
+            * Theme is required
           </div>
         </div>
 
         <div class="right">
-          <label for="profession">Field Of Expertise: </label>
+          <label for="profession"
+            >Field Of Expertise: <span class="redstar">*</span>
+          </label>
           <input
             type="text"
             formControlName="profession"
             id="profession"
-            (input)="onlyAllowLetters($event)"
+            (input)="onlyAllowLetters($event, 'profession')"
           />
           <div
             class="form-error"
@@ -230,13 +275,15 @@
     <div class="grid-section" formGroupName="supervisor">
       <div class="divone">
         <div class="left">
-          <label for="supervisorName">Supervisor's Name: </label>
+          <label for="supervisorName"
+            >Supervisor's Name: <span class="redstar">*</span>
+          </label>
           <input
             type="text"
             formControlName="supervisorname"
             id="supervisorName"
             placeholder="Supervisor's name"
-            (input)="onlyAllowLetters($event)"
+            (input)="onlyAllowLetters($event, 'supervisorname')"
           />
           <div
             class="form-error"
@@ -245,12 +292,14 @@
               stagiaireForm.get(['supervisor', 'supervisorname'])?.touched
             "
           >
-            *Supervsior's Name required
+            * Supervsior's Name required
           </div>
         </div>
 
         <div class="right">
-          <label for="contact">Supervisor's Contact: </label>
+          <label for="contact"
+            >Supervisor's Contact: <span class="redstar">*</span>
+          </label>
           <input
             type="text"
             formControlName="contact"
@@ -270,7 +319,7 @@
             <ng-container
               *ngIf="stagiaireForm.get('supervisor.contact')?.errors?.['required']"
             >
-              *Supervisor's contact is required
+              * Supervisor's contact is required
             </ng-container>
             <ng-container
               *ngIf="stagiaireForm.get('supervisor.contact')?.errors?.['pattern']"

@@ -32,6 +32,10 @@ h3 {
   margin: 10px 0 0 10px;
 }
 
+.redstar {
+  color: red;
+}
+
 /* Style Picture ............................................................... */
 .picture {
   width: 250px; /* Increased width */
